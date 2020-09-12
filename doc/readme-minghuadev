@@ -1,0 +1,151 @@
+
+issues:
+
+
+# 1 : What configuration do you use for picorv32 core
+hyf6661669 opened this issue on Apr 16, 2019
+
+ I can say that for the
+Raven chip I enabled most of the available options, such as the full
+number of registers, IRQ, multiplier and divider, barrel shifter, etc.,
+so I would guess that it is equivalent to "large".  On the other hand,
+the image refers to an FPGA implementation and I don't know how to
+directly compare the memory resources.  The Raven chip internalizes the
+register bank as flops, but the SRAM is external to the SoC core.  So
+that has to be taken into consideration.
+
+					Regards,
+					Tim
+
+
+# 2 :  Where to buy this CPU
+Martoni opened this issue on May 3, 2019 
+
+At the moment, no, because we had a limited number (50) of chips from 
+the initial shuttle run and an even more limited number (5) of assembled 
+development boards. However, we are getting several hundred additional 
+parts from the foundry that are currently in process. Please contact 
+support@efabless.com and ask to be informed when additional development 
+boards are available.
+
+
+# 3 :  How to run the iverilog simulation without the voltage regulator
+sofchet opened this issue on Apr 9
+
+Q: I am trying to run the iverilog simulation of the Raven-picorv32, however, 
+as mentioned in your verilog code, iverilog does not support the aregc01_3v3 
+regulator module. What would be the best way to run the simulation without 
+the regulator ?
+
+Knowing that I am not interested in any analog part simulation, I need just 
+an easy way to make sure that the SoC part is correctly working with the GPIOs.
+
+I tried commenting the voltage regulator part and running the GPIO simulation, 
+however, the GPIO states are not being reported correctly by the C program.
+
+A: iverilog does not support verilog-A or verilog-AMS. However, the versions 
+of the analog blocks that are in this repository are compatible with iverilog. 
+They use real-valued I/O for representing the power supplies, so it is possible 
+to not only simulate, but also to check that the power supplies are correct 
+in both the 1.8 and 3.3V domains.
+
+Q: Actually when I try to run the make file for the raven_gpio simulation 
+I get the following:
+
+  .. ./../raven.v:1603: error: An arrayed instance of aregc01_3v3 cannot have a real port (port 1: OUT) connected to a real signal (VDD1V8).
+     1 error(s) during elaboration.
+     Makefile:12: recipe for target 'raven_gpio.vpp` failed
+     
+Which is related to the voltage regulator I told you about. It is actually 
+mentioned in line 1603 in the raven.v file that there is some issue with 
+the iverilog not supporting the voltage regulator module.
+
+Then when I comment the module and run the simulation I don't get the right GPIO output:
+  ..
+
+A: Ah, it does look like raven.v is missing one important correction. iverilog 
+will not connect two real valued outputs, so having two voltage regulators 
+with the output tied to the same net won't work. The (hack) workaround that 
+I used was to remove the array identifier [1:0] from the voltage regulator 
+(see raven.v line 1602). For purposes of getting correct LVS, I instantiated 
+the voltage regulator twice and put one of them inside an `ifdef LVS ... `endif 
+block so that it was not seen by the simulator.
+
+Of course, any time that something is hidden from the simulator is a possible 
+place to introduce an error that isn't seen in simulation. For the moment, 
+I don't have a better workaround, though.
+
+---Tim
+
+
+# 5 :  Is the Raven SPI functionnal
+sofchet opened this issue on Apr 15
+
+Q: I was wondering whether the Raven_SPI was tested ? and in case it is not needed, 
+what would be the safe way to get rid of the Raven_SPI without hurting the design ?
+
+A: The SPI in the Raven chip is considered a "housekeeping" SPI. It was designed 
+largely to keep a number of critical functions away from the processor itself and 
+allow for more convenient testing. Mostly this was deemed necessary because Raven 
+was a first-of-its-kind proof of concept. In case anything was wrong with the design, 
+I wanted multiple ways to access the chip and see what was going on. As it turned out, 
+the Raven chip worked perfectly well. So, the short answer is that there is nothing 
+mandatory about the housekeeping SPI. If you remove it, just make sure that 
+the critical components it touches (like the PLL, the crystal oscillator, voltage 
+references, etc.) are hard-wired to the right values (i.e., enabled), or memory-mapped 
+into the processor area, with the correct defaults. If you memory-map any of those 
+signals, watch for the ones that will self-destruct; e.g., turning off the voltage 
+regulator will instantly kill the processor.
+
+If you are looking at the RTL for the Ravenna design on efabless.com, note that 
+the housekeeping SPI there has an additional useful function called "pass-through" 
+mode, which allows the housekeeping SPI to be used to access the SPI flash chip. 
+That allows the SPI flash chip to be connected solely to the processor, without 
+the need to jumper between the processor and the FTDI chip when switching between 
+flash programming and application run-time.
+
+Another option I have considered but never implemented is to keep the housekeeping 
+SPI, but let the SPI signals be shared with GPIO. Any program would then be able 
+to disable the SPI communication and make use of the GPIO pins for other purposes.
+
+Regards,
+Tim
+
+
+# 4 :  Adding an SPI Master to the Raven SoC
+sofchet opened this issue on Apr 15
+
+Q: I want to add an SPI interface to the SoC (hardware level) to communicate with 
+any SPI slave interface.
+
+I guess the SPI interfaces that already exist in the Raven design are for other 
+purposes. So I was wondering what would be the best approach to integrate an SPI 
+master interface to the design ? For instance, in case I don't need the Raven_SPI, 
+do you think I can easily just turn it to a general purpose SPI interface ?
+
+A: I added several components to an update of the Raven chip called Ravenna which 
+we taped out mid-year last year, got back at the end of last year, and have already 
+tested and mostly validated (there were other priorities in the way; the last bit 
+of testing should get done in the next few weeks some time). The new components 
+include the SPI master you're looking for, as well as an I2C master, and 
+a counter/timer module.
+
+To get those modules, see github.com/efabless/ravenna. You can either use the Ravenna 
+project as a base (it is very similar to Raven; essentially just an expanded version 
+of Raven), or copy the SPI master module into your project.
+
+Regards,
+Tim
+
+A: ...So from the Dashboard go to the Marketplace, click on the "SoC Platform" tab 
+(the default, I think), and then click on "Ravenna". On that page, below the block 
+diagram, is a button "Add Soft IP". Click that, and enter a project name in the pop-up 
+window or accept the default. A message appears at the top with a link to "Soft Projects" 
+(that you can also reach from the Dashboard). Go to the "Soft Projects" page and find 
+the project listed there. On the same line as the project name, there are a number 
+of buttons including one labeled "CloudV". Click that one. In the CloudV environment, 
+the SPI master can be found under source/simple_spi_master.v. From there, I am not 
+entirely sure of the proper method for copy and paste; there are several menu items 
+under Edit in CloudV (and none of them works with my setup, but I'm using a very old 
+and uncommon window manager under Linux).
+
