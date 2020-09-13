@@ -1,4 +1,14 @@
 
+toc:
+    issues # 1: configurations for picorv32 core
+    issues # 2: where to buy the chip or board
+    issues # 3: run iverilog
+    issues # 5: raven spi
+    issues # 4: add spi master
+    issues # 6: fossa pr
+    
+
+=======================================================================
 issues:
 
 
@@ -148,4 +158,14 @@ the SPI master can be found under source/simple_spi_master.v. From there, I am n
 entirely sure of the proper method for copy and paste; there are several menu items 
 under Edit in CloudV (and none of them works with my setup, but I'm using a very old 
 and uncommon window manager under Linux).
+
+
+=======================================================================
+issues # 6 : the fossa pr
+
+https://github.com/efabless/raven-picorv32/pull/6
+code merged-in in the last few commits
+
+
+=======================================================================
 
