@@ -80,4 +80,4 @@ Short Video showing initial wakeup
 
 
 ## License
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fefabless%2Fraven-picorv32.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fefabless%2Fraven-picorv32?ref=badge_large)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fpyhdl20%2Fraven-picorv32.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fpyhdl20%2Fraven-picorv32?ref=badge_large)
