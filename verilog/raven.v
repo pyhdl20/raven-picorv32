@@ -1599,7 +1599,24 @@ module raven (
 	/* NOTE:  Array of two devices combined into one here. . .	*/
 	/* need to figure out how to get iverilog to honor the analog	*/
 	/* connection (maybe not possible).				*/
-	aregc01_3v3 regulator [1:0] (
+	/** aregc01_3v3 regulator [1:0] (
+	 * based on issue # 3 on github, the above line is changed to the code
+	 * below for two separate regulator instances
+	 **/
+`ifdef LVS
+	aregc01_3v3 regulator_0 (
+	   .OUT(VDD1V8),
+	   .VIN3(VDD3V3),
+	   .GNDO(VSS),
+	   .EN(spi_reg_ena),
+	   .GNDR(VSS),
+	   .VDDO(VDD3V3),
+	   .VDDR(VDD3V3),
+	   .VDD(VDD1V8),
+	   .ENB(spi_reg_enb)
+	);
+`endif
+	aregc01_3v3 regulator_1 (
 	   .OUT(VDD1V8),
 	   .VIN3(VDD3V3),
 	   .GNDO(VSS),
