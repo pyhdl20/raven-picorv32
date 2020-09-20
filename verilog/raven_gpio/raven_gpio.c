@@ -15,10 +15,10 @@ void main()
 
     /* loop test: cycle all GPIO periodically; continue indefinitely */
     while (1) {
-	for (i = 0 ; i < 100000000; i++);
-        reg_gpio_data = 0xffff;
-	for (i = 0 ; i < 100000000; i++);
-	reg_gpio_data = 0x0000;
+	for (i = 0 ; i < 100000; i++);
+        reg_gpio_data = 0xfffd;
+	for (i = 0 ; i < 100000; i++);
+	reg_gpio_data = 0x0002;
     }
 }
 

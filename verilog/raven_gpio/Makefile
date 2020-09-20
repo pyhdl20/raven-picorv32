@@ -18,7 +18,8 @@ hex:  ${PATTERN:=.hex}
 	vvp $<
 
 %.elf: %.c ../sections.lds ../start.s
-	$(TOOLCHAIN_PATH)/riscv32-unknown-elf-gcc -march=rv32imc -Wl,-Bstatic,-T,../sections.lds,--strip-debug -ffreestanding -nostdlib -o $@ ../start.s $<
+	##$(TOOLCHAIN_PATH)/riscv32-unknown-elf-gcc -march=rv32imc -Wl,-Bstatic,-T,../sections.lds,--strip-debug -ffreestanding -nostdlib -o $@ ../start.s $<
+	$(TOOLCHAIN_PATH)/riscv32-unknown-elf-gcc -march=rv32i -Wl,-Bstatic,-T,../sections.lds,--strip-debug -ffreestanding -nostdlib -o $@ ../start.s $<
 	cp $@ $@-backup
 
 %.hex: %.elf
