@@ -19,6 +19,7 @@ hex:  ${PATTERN:=.hex}
 
 %.elf: %.c ../sections.lds ../start.s
 	$(TOOLCHAIN_PATH)/riscv32-unknown-elf-gcc -march=rv32imc -Wl,-Bstatic,-T,../sections.lds,--strip-debug -ffreestanding -nostdlib -o $@ ../start.s $<
+	cp $@ $@-backup
 
 %.hex: %.elf
 	$(TOOLCHAIN_PATH)/riscv32-unknown-elf-objcopy -O verilog $< /dev/stdout | sed -e '1 s/@00000000/@00100000/; 2,65537 d;' > $@
