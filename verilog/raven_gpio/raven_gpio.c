@@ -19,6 +19,8 @@ void main()
         reg_gpio_data = 0xfffd;
 	for (i = 0 ; i < 100000; i++);
 	reg_gpio_data = 0x0002;
+	extern void uart_main(void);
+	uart_main();
     }
 }
 

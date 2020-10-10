@@ -17,10 +17,12 @@ void print(const char *p)
 
 // --------------------------------------------------------
 
-void main()
+void uart_main()
 {
 	// Set clock to 64 kbaud
 	reg_uart_clkdiv = 625;
+	// Set clock to 115200 baud. clock 12.5M on de0nano.
+	reg_uart_clkdiv = 108;
 
 	// NOTE: Crystal is running in simulation at 5MHz
 	// Internal clock is 8x crystal, or 40MHz

@@ -17,9 +17,9 @@ hex:  ${PATTERN:=.hex}
 %.vcd: %.vvp
 	vvp $<
 
-%.elf: %.c ../sections.lds ../start.s
+%.elf: %.c ../sections.lds ../start.s raven_uart.c
 	##$(TOOLCHAIN_PATH)/riscv32-unknown-elf-gcc -march=rv32imc -Wl,-Bstatic,-T,../sections.lds,--strip-debug -ffreestanding -nostdlib -o $@ ../start.s $<
-	$(TOOLCHAIN_PATH)/riscv32-unknown-elf-gcc -march=rv32i -Wl,-Bstatic,-T,../sections.lds,--strip-debug -ffreestanding -nostdlib -o $@ ../start.s $<
+	$(TOOLCHAIN_PATH)/riscv32-unknown-elf-gcc -march=rv32i -Wl,-Bstatic,-T,../sections.lds,--strip-debug -ffreestanding -nostdlib -o $@ ../start.s $< raven_uart.c
 	cp $@ $@-backup
 
 %.hex: %.elf
